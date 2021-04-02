@@ -26,6 +26,7 @@ public class NFA implements NFAInterface {
 
     /**
      * Check if start state is also a final state. Then create start state.
+     * TODO: look into error from p1 on start states not working as final states
      *
      * @param name is the label of the start state
      */
