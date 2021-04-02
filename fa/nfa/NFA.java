@@ -6,6 +6,7 @@ import fa.dfa.DFA;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 public class NFA implements NFAInterface {
     // start state
@@ -64,8 +65,8 @@ public class NFA implements NFAInterface {
      * Adds a transition to transitions hashmap.
      *
      * @param fromState is the label of the state where the transition starts
-     * @param onSymb is the symbol from the NFA's alphabet.
-     * @param toState is the label of the state where the transition ends
+     * @param onSymb    is the symbol from the NFA's alphabet.
+     * @param toState   is the label of the state where the transition ends
      */
     @Override
     public void addTransition(String fromState, char onSymb, String toState) {
@@ -137,18 +138,32 @@ public class NFA implements NFAInterface {
     /**
      * Gets all possible next states given a start position and a symbol.
      *
-     * @param from - the source state
+     * @param from   - the source state
      * @param onSymb - the label of the transition
      * @return set of next possible states
      */
     @Override
     public Set<NFAState> getToState(NFAState from, char onSymb) {
-        /**
-         * NOTE: each transition.get can return more than 1 ending state
-         */
+        // initialize hashset to return possible transition states
         LinkedHashSet<NFAState> possibleStates = new LinkedHashSet<>();
-        transitions.get(from.getName() + onSymb);
-        return null;
+        // get next transition(s) and create tokenizer to iterate through next state(s)
+        String next = transitions.get(from.getName() + onSymb);
+        StringTokenizer tk = new StringTokenizer(next, " ");
+        String nextToken;
+        // iterate through all possible next states and find their respective NFAState object
+        while (tk.hasMoreTokens()) {
+            nextToken = tk.nextToken();
+            if (from.getName().equals(nextToken))
+                possibleStates.add(from);
+            if (startState.getName().equals(nextToken))
+                possibleStates.add(startState);
+            else
+                for (Object state : states.toArray())
+                    if (((NFAState) state).getName().equals(nextToken))
+                        possibleStates.add((NFAState) state);
+        }
+        // return all possible next states
+        return possibleStates;
     }
 
     /**
