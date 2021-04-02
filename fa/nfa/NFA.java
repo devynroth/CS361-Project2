@@ -174,6 +174,38 @@ public class NFA implements NFAInterface {
      */
     @Override
     public Set<NFAState> eClosure(NFAState s) {
-        return null;
+        // get all next states which can be reaches on an empty transition
+        Set<NFAState> nextStates = getToState(s, 'e');
+        // for each next possible state, see if there are further states which can be reached
+        for (Object state : nextStates.toArray())
+            // for each state returned by eClosureRecursive, add it to nextStates
+            for (Object level2State : eClosureRecursive((NFAState) state, nextStates))
+                nextStates.add((NFAState) level2State);
+        return nextStates;
+    }
+
+    /**
+     * Recursively finds any potential states which can be reached on
+     * an empty transition.
+     *
+     * @param s              starting state
+     * @param previousStates set of all previously explored states
+     * @return set of all possible states
+     */
+    private Set<NFAState> eClosureRecursive(NFAState s, Set<NFAState> previousStates) {
+        // get all next states which can be reaches on an empty transition
+        Set<NFAState> nextStates = getToState(s, 'e');
+        Set<NFAState> output = previousStates;
+        // for each next possible state, see if there are further states which can be reached
+        for (Object state : nextStates.toArray())
+            // if the next state has already been explored, ignore it
+            if (!output.contains((NFAState) state)) {
+                // otherwise, add it to output
+                output.add((NFAState) state);
+                // for each state returned by eClosureRecursive, add it to nextStates
+                for (Object level2State : eClosureRecursive((NFAState) state, output))
+                    output.add((NFAState) level2State);
+            }
+        return output;
     }
 }
