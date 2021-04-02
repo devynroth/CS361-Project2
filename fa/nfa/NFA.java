@@ -127,6 +127,7 @@ public class NFA implements NFAInterface {
 
     /**
      * Converts the NFA to a DFA and returns said DFA.
+     * TODO: Implement getDFA method
      *
      * @return equivalent DFA
      */
