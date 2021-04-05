@@ -75,10 +75,10 @@ public class NFA implements NFAInterface {
         alphabet.add(onSymb);
         // check if start state and character have been used already
         if (transitions.get(fromState + onSymb) == null) {
+            transitions.put(fromState + onSymb, toState);
+        } else {
             // redo addition to hashmap and append new state to end of string
             transitions.put(fromState + onSymb, transitions.get(fromState + onSymb) + " " + toState);
-        } else {
-            transitions.put(fromState + onSymb, toState);
         }
     }
 
