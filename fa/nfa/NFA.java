@@ -134,6 +134,7 @@ public class NFA implements NFAInterface {
      */
     @Override
     public DFA getDFA() {
+        
         return null;
     }
 
