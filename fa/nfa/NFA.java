@@ -164,8 +164,13 @@ public class NFA implements NFAInterface {
                     if (((NFAState) state).getName().equals(nextToken))
                         possibleStates.add((NFAState) state);
         }
+        // account for empty transitions
+        LinkedHashSet<NFAState> allPossibleStates = new LinkedHashSet<>();
+        for (Object state : allPossibleStates.toArray())
+            for (Object eclosureState : eClosure((NFAState) state).toArray())
+                allPossibleStates.add((NFAState) eclosureState);
         // return all possible next states
-        return possibleStates;
+        return allPossibleStates;
     }
 
     /**
