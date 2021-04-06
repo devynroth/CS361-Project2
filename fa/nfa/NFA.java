@@ -160,18 +160,19 @@ public class NFA implements NFAInterface {
             // ADDING TRANSITIONS TO HASHMAP
             // iterate through each letter of the alphabet
             for (Object character : alphabet.toArray()) {
-                String nextState = "";
+                LinkedHashSet<NFAState> nextState = new LinkedHashSet<>();
                 // for each NFA state in currentState
                 for (int i = 0; i < currentState.length(); i++) {
-                    // TODO: use getToState to find all possible next states from the current states
-                    // TODO: if the next state(s) are not already in nextState, add them IN ALPHABETICAL ORDER
+                    // TODO: use getToState to find all possible next states from the current NFA state on the given transition character
+                    // TODO: if the next state(s) are not already in nextState, add them
                 }
-                // TODO: if nextState is not already in stateQueue or dfaStates, add nextState to stateQueue
-                // TODO: add transition to dfaTransitions in form of {<currentState><transition character>, <nextState> (i.e. {"ABC0", "BDE"})
+                String nextDFAState = nfaSetToAlphabetizedString(nextState);
+                // TODO: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
+                // TODO: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
             }
         }
         // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
-        // TODO: map each state in dfaStates to a single-character string to comply with DFA naming conventions
+        // TODO: map each state in dfaStates to a single-character string to comply with DFA naming conventions (don't forget dfaStartState)
         // nextDFAState can be incremented with nextDFAState++ when naming the states in dfaStates
         char nextDFAState = 'a';
         // TODO: adapt dfaTransitions to comply with the new naming scheme for state names
