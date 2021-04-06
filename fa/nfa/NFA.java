@@ -141,20 +141,21 @@ public class NFA implements NFAInterface {
         Queue<String> stateQueue = new ArrayDeque<>();
         // add start state to begin
         stateQueue.add(startState.getName());
-        states.forEach(element -> { stateQueue.add(element)};
+        boolean isStartState = true;
         while (!stateQueue.isEmpty()) {
             // remove the next state from the queue
             String currentState = stateQueue.remove();
             // ENSURING CURRENT STATE IS ACCURATE AND FULL
-            // TODO: get eclosure of currentState
-            //Set<NFAState> eClosure = currentState.eClosureRecursive(currentState, states);
-            // TODO: reassign current state to output of nfaSetToAlphabetizedString
-            // TODO: if currentState is not the start state, add it to dfaStates. if it is the start state, assign it to dfaStartState
-            if(currentState != startState.getName()){
+            // COMPLETE: get eclosure of currentState
+            Set<NFAState> eClosure = eClosureOfStates(currentState);
+            // COMPLETE: reassign current state to output of nfaSetToAlphabetizedString
+            currentState = nfaSetToAlphabetizedString(eClosure);
+            // COMPLETE: if currentState is not the start state, add it to dfaStates. if it is the start state, assign it to dfaStartState
+            if (isStartState) {
+                isStartState = false;
+                dfaStartState = currentState;
+            } else {
                 dfaStates.add(currentState);
-            }
-            if(currentState.equals(startState.getName())){
-                dfaStartState += currentState;
             }
             // ADDING TRANSITIONS TO HASHMAP
             // iterate through each letter of the alphabet
@@ -194,6 +195,19 @@ public class NFA implements NFAInterface {
     }
 
     /**
+     * Method to find and return a target NFAState
+     *
+     * @param target - Name of the target state
+     * @return - Target NFAState object, or null if the given state does not exist
+     */
+    private NFAState getState(String target) {
+        for (NFAState nfaState : (NFAState[]) states.toArray())
+            if (nfaState.getName().equals(target))
+                return nfaState;
+        return null;
+    }
+
+    /**
      * Gets all possible next states given a start position and a symbol.
      * TODO: there may be an infinite loop between getToState and eClosure calling each other
      *
@@ -228,6 +242,31 @@ public class NFA implements NFAInterface {
                 allPossibleStates.add((NFAState) eclosureState);
         // return all possible next states
         return allPossibleStates;
+    }
+
+    /**
+     * Returns the eClosure of the given NFA states as a Set of NFAStates
+     *
+     * @param states - String containing names of all states to get the eclosure of
+     * @return - Set of NFAStates
+     */
+    private Set<NFAState> eClosureOfStates(String states) {
+        LinkedHashSet<NFAState> output = new LinkedHashSet<>();
+        // for each state in states, if the character is not a space
+        for (int i = 0; i < states.length(); i++) {
+            if (states.charAt(i) != ' ') {
+                // get the NFAState of the current state
+                NFAState currentState = getState(Character.toString(states.charAt(i)));
+                // if we have not alreaedy visited the current state
+                if (!output.contains(currentState)) {
+                    // get its eclosure and add all states to output
+                    Set<NFAState> eClosureOfCurrentState = eClosure(currentState);
+                    for (Object state : eClosureOfCurrentState.toArray())
+                        output.add((NFAState) state);
+                }
+            }
+        }
+        return output;
     }
 
     /**
