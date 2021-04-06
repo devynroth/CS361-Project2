@@ -3,10 +3,7 @@ package fa.nfa;
 import fa.State;
 import fa.dfa.DFA;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class NFA implements NFAInterface {
     // start state
@@ -134,11 +131,63 @@ public class NFA implements NFAInterface {
      */
     @Override
     public DFA getDFA() {
-        return null;
+        // String storing start state to add to DFA later
+        String dfaStartState = "";
+        // set to store a list of states in the DFA
+        Set<String> dfaStates = new LinkedHashSet<>();
+        // hashmap to store dfa state transitions (i.e. "ABC1", "ABD")
+        HashMap<String, String> dfaTransitions = new HashMap<>();
+        // queue to store next DFA states to explore
+        Queue<String> stateQueue = new ArrayDeque<>();
+        // add start state to begin
+        stateQueue.add(startState.getName());
+        while (!stateQueue.isEmpty()) {
+            // remove the next state from the queue
+            String currentState = stateQueue.remove();
+            // ENSURING CURRENT STATE IS ACCURATE AND FULL
+            // TODO: get eclosure of currentState
+            // TODO: reassign current state to output of nfaSetToAlphabetizedString
+            // TODO: if currentState is not the start state, add it to dfaStates. if it is the start state, assign it to dfaStartState
+            // ADDING TRANSITIONS TO HASHMAP
+            // iterate through each letter of the alphabet
+            for (Object character : alphabet.toArray()) {
+                String nextState = "";
+                // for each NFA state in currentState
+                for (int i = 0; i < currentState.length(); i++) {
+                    // TODO: use getToState to find all possible next states from the current states
+                    // TODO: if the next state(s) are not already in nextState, add them IN ALPHABETICAL ORDER
+                }
+                // TODO: if nextState is not already in stateQueue or dfaStates, add nextState to stateQueue
+                // TODO: add transition to dfaTransitions in form of {<currentState><transition character>, <nextState> (i.e. {"ABC0", "BDE"})
+            }
+        }
+        // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
+        // TODO: map each state in dfaStates to a single-character string to comply with DFA naming conventions
+        // nextDFAState can be incremented with nextDFAState++ when naming the states in dfaStates
+        char nextDFAState = 'a';
+        // TODO: adapt dfaTransitions to comply with the new naming scheme for state names
+        // NOTE: these transition names can be changed when they are added to the dfa, or before
+        DFA dfa = new DFA();
+        // TODO: add states and transitions to dfa object using new state names
+        // NOTE: WHEN ADDING STATES, CHECK IF THE STATE CONTAINS A FINAL STATE. IF SO, USE dfa.addFinalState
+        return dfa;
+    }
+
+    /**
+     * Given a set of NFA states, returns the names of each state in a string in alphabetical order
+     * TODO: implement nfaSetToAlphabetizedString
+     *
+     * @param states - Set of states to be alphabetized and converted to a string
+     * @return - String of states in alphabetical order
+     */
+    private String nfaSetToAlphabetizedString(Set<NFAState> states) {
+        String output = "";
+        return output;
     }
 
     /**
      * Gets all possible next states given a start position and a symbol.
+     * TODO: there may be an infinite loop between getToState and eClosure calling each other
      *
      * @param from   - the source state
      * @param onSymb - the label of the transition
