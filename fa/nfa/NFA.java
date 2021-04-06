@@ -2,9 +2,11 @@ package fa.nfa;
 
 import fa.State;
 import fa.dfa.DFA;
-import fa.dfa.DFAState;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 public class NFA implements NFAInterface {
     // start state
@@ -132,22 +134,6 @@ public class NFA implements NFAInterface {
      */
     @Override
     public DFA getDFA() {
-        // uses these to store the DFA values
-        HashMap<String, String> dfaTransitions = new HashMap<>();
-        LinkedHashSet<DFAState> dfaStates = new LinkedHashSet<>();
-        // queue of dfastates to visit
-        Queue<String> stateQueue = new ArrayDeque<>();
-        // set of all states which can be reached on an eclosure
-        Set<NFAState> eclosureStates = eClosure(startState);
-        String startStateName = "";
-        for (Object state : eclosureStates)
-            startStateName += ((NFAState) state).getName();
-        stateQueue.add(startStateName);
-        while (!stateQueue.isEmpty()) {
-            for (Object character : alphabet.toArray()) {
-                String nextStates = transitions.get(stateQueue.peek() + (char) character);
-            }
-        }
         return null;
     }
 
@@ -162,7 +148,6 @@ public class NFA implements NFAInterface {
     public Set<NFAState> getToState(NFAState from, char onSymb) {
         // initialize hashset to return possible transition states
         LinkedHashSet<NFAState> possibleStates = new LinkedHashSet<>();
-        possibleStates.add(from);
         // get next transition(s) and create tokenizer to iterate through next state(s)
         String next = transitions.get(from.getName() + onSymb);
         StringTokenizer tk = new StringTokenizer(next, " ");
@@ -179,13 +164,8 @@ public class NFA implements NFAInterface {
                     if (((NFAState) state).getName().equals(nextToken))
                         possibleStates.add((NFAState) state);
         }
-        // account for empty transitions by getting eclosure of each possible state
-        LinkedHashSet<NFAState> allPossibleStates = new LinkedHashSet<>();
-        for (Object state : possibleStates.toArray())
-            for (Object eclosureState : eClosure((NFAState) state).toArray())
-                allPossibleStates.add((NFAState) eclosureState);
         // return all possible next states
-        return allPossibleStates;
+        return possibleStates;
     }
 
     /**
