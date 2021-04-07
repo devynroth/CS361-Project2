@@ -218,30 +218,25 @@ public class NFA implements NFAInterface {
 
     /**
      * Given a set of NFA states, returns the names of each state in a string in alphabetical order
-     * TODO: implement nfaSetToAlphabetizedString
      *
      * @param states - Set of states to be alphabetized and converted to a string
      * @return - String of states in alphabetical order
      */
     private String nfaSetToAlphabetizedString(Set<NFAState> states) {
-        String output = "";
-        String[] stateNames = (String[]) states.toArray();
-        for (String state : stateNames) {
-            char[] letters = state.toCharArray();
-
-            for (int i = 0; i < (letters.length - 1); i++) {
-                for (int j = i + 1; j > 0; j--) {
-                    if (letters[j] < letters[j - 1]) {
-                        char temp = letters[j - 1];
-                        letters[j - 1] = letters[j];
-                        letters[j] = temp;
-                    }
+        StringBuilder output = new StringBuilder();
+        for (NFAState state : states) {
+            if (output.length() == 0) {
+                output.append(state.getName());
+            } else {
+                for (int i = 0; i < output.length(); i++) {
+                    if (output.charAt(i) > state.getName().charAt(0))
+                        output.insert(i, state.getName());
+                    else if (i == output.length() - 1)
+                        output.append(state.getName());
                 }
             }
         }
-        // TODO: fix letters issue
-        output = String.valueOf(letters);
-        return output;
+        return output.toString();
     }
 
     /**
