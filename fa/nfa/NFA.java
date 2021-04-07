@@ -166,8 +166,7 @@ public class NFA implements NFAInterface {
                 for (int i = 0; i < currentState.length(); i++) {
                     // COMPLETE: use getToState to find all possible next states from the current NFA state on the given transition character
                     // COMPLETE: if the next state(s) are not already in nextState, add them
-                    for (Object state : getToState(getState(Character.toString(currentState.charAt(i))), character))
-                        nextState.add((NFAState) state);
+                    nextState.addAll(getToState(Objects.requireNonNull(getState(Character.toString(currentState.charAt(i)))), character));
                 }
                 String nextDFAState = nfaSetToAlphabetizedString(nextState);
                 // COMPLETE: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
