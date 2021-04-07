@@ -181,9 +181,10 @@ public class NFA implements NFAInterface {
         // TODO: map each state in dfaStates to a single-character string to comply with DFA naming conventions (don't forget dfaStartState)
         // nextDFAState can be incremented with nextDFAState++ when naming the states in dfaStates
         char nextDFAState = 'a';
+        DFA dfa = new DFA();
+        HashMap<String, String> nfaTodfaMap = new HashMap<>();
         // TODO: adapt dfaTransitions to comply with the new naming scheme for state names
         // NOTE: these transition names can be changed when they are added to the dfa, or before
-        DFA dfa = new DFA();
         // TODO: add states and transitions to dfa object using new state names
         // NOTE: WHEN ADDING STATES, CHECK IF THE STATE CONTAINS A FINAL STATE. IF SO, USE dfa.addFinalState
         return dfa;
