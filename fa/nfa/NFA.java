@@ -199,11 +199,11 @@ public class NFA implements NFAInterface {
      */
     private String nfaSetToAlphabetizedString(Set<NFAState> states) {
         String output = "";
-        String[] stateNames = states.toArray();
+        String[] stateNames = (String[]) states.toArray();
         for (String state : stateNames){
             char[] letters = state.toCharArray();
 
-            for(int i = 0; i < (letters.length-1) i++;){
+            for(int i = 0; i < (letters.length-1); i++){
                 for(int j = i+1; j > 0; j--){
                     if(letters[j] < letters[j-1]){
                         char temp = letters[j-1];
@@ -213,6 +213,7 @@ public class NFA implements NFAInterface {
                 }
             }
         }
+        // TODO: fix letters issue
         output = String.valueOf(letters);
         return output;
     }
