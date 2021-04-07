@@ -170,23 +170,50 @@ public class NFA implements NFAInterface {
                 }
                 String nextDFAState = nfaSetToAlphabetizedString(nextState);
                 // COMPLETE: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
-                if(!(stateQueue.contains(nextDFAState) | dfaStates.contains(nextDFAState) | dfaStartState.equals(nextDFAState)))
+                if (!(stateQueue.contains(nextDFAState) | dfaStates.contains(nextDFAState) | dfaStartState.equals(nextDFAState)))
                     stateQueue.add(nextDFAState);
                 // COMPLETE: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
                 dfaTransitions.put(currentState + Character.toString(character), nextDFAState);
             }
         }
         // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
-        // TODO: map each state in dfaStates to a single-character string to comply with DFA naming conventions (don't forget dfaStartState)
+        // COMPLETE: map each state in dfaStates to a single-character string to comply with DFA naming conventions (don't forget dfaStartState)
         // nextDFAState can be incremented with nextDFAState++ when naming the states in dfaStates
         char nextDFAState = 'a';
         DFA dfa = new DFA();
         HashMap<String, String> nfaTodfaMap = new HashMap<>();
-        // TODO: adapt dfaTransitions to comply with the new naming scheme for state names
+        // for each new DFA state, add it to dfa and nfaTodfaMap for later access
+        for (String state : (String[]) dfaStates.toArray()) {
+            nfaTodfaMap.put(state, Character.toString(nextDFAState));
+            if (containsFinalState(state))
+                dfa.addFinalState(Character.toString(nextDFAState++));
+            else
+                dfa.addState(Character.toString(nextDFAState++));
+        }
+        // add the start state
+        nfaTodfaMap.put(dfaStartState, Character.toString(nextDFAState));
+        dfa.addStartState(Character.toString(nextDFAState++));
+        // COMPLETE: adapt dfaTransitions to comply with the new naming scheme for state names and add them to the dfa
         // NOTE: these transition names can be changed when they are added to the dfa, or before
-        // TODO: add states and transitions to dfa object using new state names
+        dfaTransitions.forEach((key, value) -> {
+            dfa.addTransition(nfaTodfaMap.get(key.substring(0, key.length() - 1)), key.charAt(key.length() - 1), nfaTodfaMap.get(value));
+        });
         // NOTE: WHEN ADDING STATES, CHECK IF THE STATE CONTAINS A FINAL STATE. IF SO, USE dfa.addFinalState
         return dfa;
+    }
+
+    /**
+     * Method to check if a given DFA state contains an NFA final state.
+     *
+     * @param state - State(s) to be checked
+     * @return - True if state contains a final state, false otherwise
+     */
+    private boolean containsFinalState(String state) {
+        for (int i = 0; i < state.length(); i++) {
+            if (state.charAt(i) != ' ' && Objects.requireNonNull(getState(Character.toString(state.charAt(i)))).isFinalState())
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -199,14 +226,14 @@ public class NFA implements NFAInterface {
     private String nfaSetToAlphabetizedString(Set<NFAState> states) {
         String output = "";
         String[] stateNames = (String[]) states.toArray();
-        for (String state : stateNames){
+        for (String state : stateNames) {
             char[] letters = state.toCharArray();
 
-            for(int i = 0; i < (letters.length-1); i++){
-                for(int j = i+1; j > 0; j--){
-                    if(letters[j] < letters[j-1]){
-                        char temp = letters[j-1];
-                        letters[j-1] = letters[j];
+            for (int i = 0; i < (letters.length - 1); i++) {
+                for (int j = i + 1; j > 0; j--) {
+                    if (letters[j] < letters[j - 1]) {
+                        char temp = letters[j - 1];
+                        letters[j - 1] = letters[j];
                         letters[j] = temp;
                     }
                 }
