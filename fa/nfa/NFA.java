@@ -126,7 +126,6 @@ public class NFA implements NFAInterface {
 
     /**
      * Converts the NFA to a DFA and returns said DFA.
-     * TODO: Implement getDFA method
      *
      * @return equivalent DFA
      */
@@ -160,20 +159,20 @@ public class NFA implements NFAInterface {
             }
             // ADDING TRANSITIONS TO HASHMAP
             // iterate through each letter of the alphabet
-            for (char character : (Character[]) alphabet.toArray()) {
+            for (Object character : alphabet.toArray()) {
                 LinkedHashSet<NFAState> nextState = new LinkedHashSet<>();
                 // for each NFA state in currentState
                 for (int i = 0; i < currentState.length(); i++) {
                     // COMPLETE: use getToState to find all possible next states from the current NFA state on the given transition character
                     // COMPLETE: if the next state(s) are not already in nextState, add them
-                    nextState.addAll(getToState(Objects.requireNonNull(getState(Character.toString(currentState.charAt(i)))), character));
+                    nextState.addAll(getToState(Objects.requireNonNull(getState(Character.toString(currentState.charAt(i)))), (char) character));
                 }
                 String nextDFAState = nfaSetToAlphabetizedString(nextState);
                 // COMPLETE: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
                 if (!(stateQueue.contains(nextDFAState) | dfaStates.contains(nextDFAState) | dfaStartState.equals(nextDFAState)))
                     stateQueue.add(nextDFAState);
                 // COMPLETE: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
-                dfaTransitions.put(currentState + Character.toString(character), nextDFAState);
+                dfaTransitions.put(currentState + Character.toString((char) character), nextDFAState);
             }
         }
         // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
@@ -246,15 +245,16 @@ public class NFA implements NFAInterface {
      * @return - Target NFAState object, or null if the given state does not exist
      */
     private NFAState getState(String target) {
-        for (NFAState nfaState : (NFAState[]) states.toArray())
-            if (nfaState.getName().equals(target))
-                return nfaState;
+        for (Object nfaState : states.toArray())
+            if (((NFAState) nfaState).getName().equals(target))
+                return (NFAState) nfaState;
         return null;
     }
 
     /**
      * Gets all possible next states given a start position and a symbol.
      * TODO: there may be an infinite loop between getToState and eClosure calling each other
+     * Yes there is an infinite loop
      *
      * @param from   - the source state
      * @param onSymb - the label of the transition
@@ -266,6 +266,10 @@ public class NFA implements NFAInterface {
         LinkedHashSet<NFAState> possibleStates = new LinkedHashSet<>();
         // get next transition(s) and create tokenizer to iterate through next state(s)
         String next = transitions.get(from.getName() + onSymb);
+        if (next == null) {
+            possibleStates.add(from);
+            return possibleStates;
+        }
         StringTokenizer tk = new StringTokenizer(next, " ");
         String nextToken;
         // iterate through all possible next states and find their respective NFAState object
@@ -282,7 +286,7 @@ public class NFA implements NFAInterface {
         }
         // account for empty transitions
         LinkedHashSet<NFAState> allPossibleStates = new LinkedHashSet<>();
-        for (Object state : allPossibleStates.toArray())
+        for (Object state : possibleStates.toArray())
             for (Object eclosureState : eClosure((NFAState) state).toArray())
                 allPossibleStates.add((NFAState) eclosureState);
         // return all possible next states
