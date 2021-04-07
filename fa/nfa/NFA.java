@@ -160,13 +160,13 @@ public class NFA implements NFAInterface {
             }
             // ADDING TRANSITIONS TO HASHMAP
             // iterate through each letter of the alphabet
-            for (char character : (char[]) alphabet.toArray()) {
+            for (char character : (Character[]) alphabet.toArray()) {
                 LinkedHashSet<NFAState> nextState = new LinkedHashSet<>();
                 // for each NFA state in currentState
                 for (int i = 0; i < currentState.length(); i++) {
                     // COMPLETE: use getToState to find all possible next states from the current NFA state on the given transition character
                     // COMPLETE: if the next state(s) are not already in nextState, add them
-                    for (Object state : getToState(getState(currentState[i]), character))
+                    for (Object state : getToState(getState(Character.toString(currentState.charAt(i))), character))
                         nextState.add((NFAState) state);
                 }
                 String nextDFAState = nfaSetToAlphabetizedString(nextState);
@@ -174,7 +174,7 @@ public class NFA implements NFAInterface {
                 if(!(stateQueue.contains(nextDFAState) | dfaStates.contains(nextDFAState) | dfaStartState.equals(nextDFAState)))
                     stateQueue.add(nextDFAState);
                 // COMPLETE: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
-                dfaTransitions.add(currentState + Character.toString(character), nextDFAState);
+                dfaTransitions.put(currentState + Character.toString(character), nextDFAState);
             }
         }
         // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
