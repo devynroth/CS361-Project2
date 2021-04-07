@@ -69,7 +69,8 @@ public class NFA implements NFAInterface {
     @Override
     public void addTransition(String fromState, char onSymb, String toState) {
         // if onSymb is not in alphabet, add it
-        alphabet.add(onSymb);
+        if (onSymb != 'e')
+            alphabet.add(onSymb);
         // check if start state and character have been used already
         if (transitions.get(fromState + onSymb) == null) {
             transitions.put(fromState + onSymb, toState);
@@ -135,7 +136,7 @@ public class NFA implements NFAInterface {
         String dfaStartState = "";
         // set to store a list of states in the DFA
         Set<String> dfaStates = new LinkedHashSet<>();
-        // hashmap to store dfa state transitions (i.e. "ABC1", "ABD")
+        // hashmap to store dfa state transitions (i.e. "ABC1", "ABD"), storing beginning and end of each transition
         HashMap<String, String> dfaTransitions = new HashMap<>();
         // queue to store next DFA states to explore
         Queue<String> stateQueue = new ArrayDeque<>();
@@ -159,16 +160,21 @@ public class NFA implements NFAInterface {
             }
             // ADDING TRANSITIONS TO HASHMAP
             // iterate through each letter of the alphabet
-            for (Object character : alphabet.toArray()) {
+            for (char character : (char[]) alphabet.toArray()) {
                 LinkedHashSet<NFAState> nextState = new LinkedHashSet<>();
                 // for each NFA state in currentState
                 for (int i = 0; i < currentState.length(); i++) {
-                    // TODO: use getToState to find all possible next states from the current NFA state on the given transition character
-                    // TODO: if the next state(s) are not already in nextState, add them
+                    // COMPLETE: use getToState to find all possible next states from the current NFA state on the given transition character
+                    // COMPLETE: if the next state(s) are not already in nextState, add them
+                    for (Object state : getToState(getState(currentState[i]), character))
+                        nextState.add((NFAState) state);
                 }
                 String nextDFAState = nfaSetToAlphabetizedString(nextState);
-                // TODO: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
-                // TODO: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
+                // COMPLETE: if nextDFAState is not already in stateQueue, dfaStartState or dfaStates, add nextDFAState to stateQueue
+                if(!(stateQueue.contains(nextDFAState) | dfaStates.contains(nextDFAState) | dfaStartState.equals(nextDFAState)))
+                    stateQueue.add(nextDFAState);
+                // COMPLETE: add transition to dfaTransitions in form of {<currentState><transition character>, <nextDFAState> (i.e. {"ABC0", "BDE"})
+                dfaTransitions.add(currentState + Character.toString(character), nextDFAState);
             }
         }
         // once stateQueue is empty, convert dfaStates to single-character values rather than multi character values
