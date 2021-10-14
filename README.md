@@ -18,7 +18,6 @@ Discussion:
 	When we started this project we were sailing pretty quickly as we modified the code from Project 1 and adjusted it to fit the rules of Project 2. Then we hit the horrifying monsters that were the getDFA and eClosure methods. While we were trying to code these two methods I will be honest there was a point in time when we considered dropping out and starting our own Etsy shop selling crocheted sweaters. We both don't know how to sew, but that wasn't going to stop us. 
 	Eventually though we managed to write out all the support methods we needed to finish the getDFA method, and we began to work through the process of converting the NFA to the DFA. 
 	We built a Queue to hold the states from the NFA, a Hashmap to hold the DFA transitions after conversion, and a Set to hold the converted DFA states. It took a while to figure out how to write the proper logic for the conversion, we both understood the idea conceptually, but it was the implementation that was the issue. However, we eventually got the whole concept written out.
-
 	Overall, this was an interesting and very difficult project to get finished. There were dark times when we both definitely both considered dropping out. But we both made it and we both can safely say we feel more comfortable with the idea of coding NFA's as well as coding the equivalent DFA.
 
 Testing:
